@@ -96,9 +96,4 @@ public class Polynomial {
         }
         return sb.toString();
     }
-    
-    public static void main(String[] args) {
-    	Polynomial p = Polynomial.randPoly(4, 5);
-    	System.out.println(p);
-    }
 }
