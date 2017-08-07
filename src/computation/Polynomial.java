@@ -18,6 +18,7 @@ public class Polynomial {
     }
     
     public static void main(String[] theArgs) {
+    	// y = 6 + 3(6) + 2(6^2) = 96
     	int a[] ={6,3,2};
     	Polynomial p = new Polynomial(2, a);
     	System.out.println(p.compute(6));
