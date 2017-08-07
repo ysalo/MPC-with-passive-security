@@ -54,6 +54,7 @@ public class Polynomial {
     	//append the constant(secret) term
     	coefs[theDegree] = theConst;
     	Polynomial p = new Polynomial(theDegree, coefs);
+    	
     	return p;
     }
     
