@@ -1,8 +1,13 @@
 package computation;
 
+import java.security.SecureRandom;
+import java.util.Random;
+
 public class Polynomial {
+	private static final int PRIME = 127; //TODO generate a prime randomly
 	private final int[] myCoefs;
 	private final int myDegree;
+	
 	
 	/**
 	 * Class constructor.
@@ -15,23 +20,81 @@ public class Polynomial {
 	}
 	
 	/**
-	 * Compute the polynomial using Horner's Rule.
+	 * Compute the polynomial using Horner's Rule
+	 * and applying mod operator for field arithmetic.
 	 * @param theVal value to compute at.
 	 * @return the result of computation.
 	 */
-    public final int compute(final int theVal) {
-        int result = 0;
+    public final int modCompute(final int theVal) {
+        //Evaluating at 0 will reveal the secret.
+    	if(theVal <= 0)
+        	throw new IllegalArgumentException("Cannot evaluate at less than 1!");
+    	int result = 0;
         for (int c : myCoefs) {
         	result = result * theVal + c;
+        	result = result % PRIME;
         }
         return result;
     }
     
-    public static void main(String[] theArgs) {
-    	// y = 2(6)^2 + 3(6) + 6 = 96
-    	int a[] ={2,3,6};
-    	Polynomial p = new Polynomial(2, a);
-    	System.out.println(p.compute(6));
+    /**
+     * Generate a random polynomial to represent the secret (constant)
+     * term. 
+     * TODO add prime generation.
+     * @param theConst the secret.
+     * @param theDegree the degree of the polynomial.
+     * @return a random polynomial of desired degree.
+     */
+    public static final Polynomial randPoly(final int theConst, final int theDegree) {
+    	final Random rand = new SecureRandom();
+    	//one more coefficient than the degree 
+    	final int[] coefs = new int[theDegree + 1]; 
+    	for(int i = 0; i < theDegree; i++) {
+    		coefs[i] = rand.nextInt(PRIME);
+    	}
+    	//append the constant(secret) term
+    	coefs[theDegree] = theConst;
+    	Polynomial p = new Polynomial(theDegree, coefs);
+    	return p;
+    }
+    
+    /**
+     * Compute the shares of the polynomial.
+     * @param theNumP the number of players.
+     * @return array of shares.
+     */
+    public final int[] compute_shares(final int theNumP) {
+    	final int[] shares = new int[theNumP];
+    	//polynomial(0) = the secret
+    	for(int i = 1; i <= theNumP; i++) {
+    		shares[i - 1] = modCompute(i);
+    	}
+    	return shares;
+    }
+    //TODO maybe will have to delete this method.
+    /**
+     * String representation of a polynomial with 
+     * the constant term being the first in the list.
+     * example:
+     * 		[1,2,3,4]
+     * 		f(x) = 1 + 2x + 3x^2 + 4x^3
+     */
+    @Override 
+    public final String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("f(x) = ");
+    	if (myDegree ==  0) return sb.append(myCoefs[0]).toString();
+        if (myDegree ==  1 
+        		&& myCoefs[1] !=0 ) return sb.append(myCoefs[0] + " + " + myCoefs[1] + "x").toString();
+        for(int i = 0; i <= myDegree; i++) {
+        	if(myCoefs[i] == 0) continue;
+        	else {
+        		if(i == 0) sb.append(myCoefs[i]);
+        		else if(i == 1) sb.append(" + " + myCoefs[i] + "x");
+        		else sb.append(" + " + myCoefs[i] + "x^" + i);
+        	}
+        }
+        return sb.toString();
     }
 }
 	
