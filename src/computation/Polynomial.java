@@ -9,7 +9,7 @@ public class Polynomial {
 	 * @param theDegree degree of polynomial.
 	 * @param theCoefs the coefficients of the polynomial.
 	 */
-	Polynomial(final int theDegree, final int[] theCoefs) {
+	public Polynomial(final int theDegree, final int[] theCoefs) {
 		myDegree = theDegree;
 		myCoefs = theCoefs;
 	}
@@ -27,12 +27,6 @@ public class Polynomial {
         return result;
     }
     
-    public static void main(String[] theArgs) {
-    	// y = 2(6)^2 + 3(6) + 6 = 96
-    	int a[] ={2,3,6};
-    	Polynomial p = new Polynomial(2, a);
-    	System.out.println(p.compute(6));
-    	System.out.println("Just a test");
-    }
+    // I moved main to the protocol package
 }
 	
