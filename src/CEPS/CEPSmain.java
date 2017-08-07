@@ -8,7 +8,7 @@ public class CEPSmain {
 		// y = 2(6)^2 + 3(6) + 6 = 96
 		int c1[] = {2, 3, 6};
 		Polynomial p1 = new Polynomial(2, c1);
-		System.out.println(p1.compute(6));
+		System.out.println(p1.modCompute(6));
 	}
 	
 	
