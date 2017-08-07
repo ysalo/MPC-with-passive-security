@@ -10,18 +10,24 @@ public class Polynomial {
 		coefs = theCoefs;
 	}
 	
+	/**
+	 * Compute the polynomial using Horner's Rule.
+	 * @param theVal value to compute at.
+	 * @return the result of computation.
+	 */
     public final int compute(final int theVal) {
-        int total = 0;
-        for (int i = degree; i >= 0; i--)
-            total = coefs[i] + (theVal * total);
-        return total;
+        int result = 0;
+        for (int coef : coefs) {
+        	result = result * theVal + coef;
+        }
+        return result;
     }
     
     public static void main(String[] theArgs) {
-    	// y = 6 + 3(6) + 2(6^2) = 96
-    	int a[] ={6,3,2};
+    	// y = 2(6)^2 + 3(6) + 6 = 96
+    	int a[] ={2,3,6};
     	Polynomial p = new Polynomial(2, a);
-    	System.out.println(p.compute(6));
+    	System.out.println(p.compute(7));
     	
     	
     }
