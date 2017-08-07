@@ -1,12 +1,12 @@
 package computation;
 
 public class Polynomial {
-	private final int[] coefs;
-	private final int degree;
+	private final int[] myCoefs;
+	private final int myDegree;
 	
 	Polynomial(final int theDegree, final int[] theCoefs) {
-		degree = theDegree;
-		coefs = theCoefs;
+		myDegree = theDegree;
+		myCoefs = theCoefs;
 	}
 	
 	/**
@@ -16,8 +16,8 @@ public class Polynomial {
 	 */
     public final int compute(final int theVal) {
         int result = 0;
-        for (int coef : coefs) {
-        	result = result * theVal + coef;
+        for (int c : myCoefs) {
+        	result = result * theVal + c;
         }
         return result;
     }
