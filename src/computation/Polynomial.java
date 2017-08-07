@@ -14,7 +14,7 @@ public class Polynomial {
 	 * @param theDegree degree of polynomial.
 	 * @param theCoefs the coefficients of the polynomial.
 	 */
-	Polynomial(final int theDegree, final int[] theCoefs) {
+	public Polynomial(final int theDegree, final int[] theCoefs) {
 		myDegree = theDegree;
 		myCoefs = theCoefs;
 	}
@@ -36,7 +36,6 @@ public class Polynomial {
         }
         return result;
     }
-    
     /**
      * Generate a random polynomial to represent the secret (constant)
      * term. 
@@ -97,4 +96,3 @@ public class Polynomial {
         return sb.toString();
     }
 }
-	
