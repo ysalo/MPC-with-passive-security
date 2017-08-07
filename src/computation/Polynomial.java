@@ -4,6 +4,11 @@ public class Polynomial {
 	private final int[] myCoefs;
 	private final int myDegree;
 	
+	/**
+	 * Class constructor.
+	 * @param theDegree degree of polynomial.
+	 * @param theCoefs the coefficients of the polynomial.
+	 */
 	Polynomial(final int theDegree, final int[] theCoefs) {
 		myDegree = theDegree;
 		myCoefs = theCoefs;
