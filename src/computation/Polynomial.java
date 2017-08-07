@@ -48,11 +48,12 @@ public class Polynomial {
     	final Random rand = new SecureRandom();
     	//one more coefficient than the degree 
     	final int[] coefs = new int[theDegree + 1]; 
-    	for(int i = 0; i < theDegree; i++) {
+    	coefs[0] = theConst;
+    	for(int i = 1; i <= theDegree; i++) {
     		coefs[i] = rand.nextInt(PRIME);
     	}
     	//append the constant(secret) term
-    	coefs[theDegree] = theConst;
+    	
     	Polynomial p = new Polynomial(theDegree, coefs);
     	
     	return p;
@@ -83,17 +84,21 @@ public class Polynomial {
     public final String toString() {
         final StringBuilder sb = new StringBuilder();
         sb.append("f(x) = ");
-    	if (myDegree ==  0) return sb.append(myCoefs[0]).toString();
-        if (myDegree ==  1 
-        		&& myCoefs[1] !=0 ) return sb.append(myCoefs[0] + " + " + myCoefs[1] + "x").toString();
-        for(int i = 0; i <= myDegree; i++) {
+    	for(int i = 0; i <= myDegree; i++) {
         	if(myCoefs[i] == 0) continue;
-        	else {
+        	else { //perhaps simplify
         		if(i == 0) sb.append(myCoefs[i]);
-        		else if(i == 1) sb.append(" + " + myCoefs[i] + "x");
-        		else sb.append(" + " + myCoefs[i] + "x^" + i);
+        		else if(i == 1 && myCoefs[i] != 1) sb.append(" + " + myCoefs[i] + "x");
+        		else if(i == 1 && myCoefs[i] == 1) sb.append(" + " + "x");
+        		else if(i > 1 && myCoefs[i] != 1) sb.append(" + " + myCoefs[i] + "x^" + i);
+        		else if(i > 1 && myCoefs[i] == 1) sb.append(" + " + "x^" + i);
         	}
         }
         return sb.toString();
+    }
+    
+    public static void main(String[] args) {
+    	Polynomial p = Polynomial.randPoly(4, 5);
+    	System.out.println(p);
     }
 }
