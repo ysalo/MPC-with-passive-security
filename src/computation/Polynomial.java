@@ -1,6 +1,5 @@
 package computation;
 
-
 public class Polynomial {
 	private final int[] coefs;
 	private final int degree;
@@ -27,9 +26,7 @@ public class Polynomial {
     	// y = 2(6)^2 + 3(6) + 6 = 96
     	int a[] ={2,3,6};
     	Polynomial p = new Polynomial(2, a);
-    	System.out.println(p.compute(7));
-    	
-    	
+    	System.out.println(p.compute(6));
     }
 }
 	
