@@ -32,6 +32,7 @@ public class Polynomial {
     	int a[] ={2,3,6};
     	Polynomial p = new Polynomial(2, a);
     	System.out.println(p.compute(6));
+    	System.out.println("Just a test");
     }
 }
 	
