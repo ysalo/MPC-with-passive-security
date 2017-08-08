@@ -1,9 +1,9 @@
 package computation;
 
-import computation.Polynomial;
+import CEPS.Player;
 
 public class Gates {
-	
+	private static final int PRIME = 127;
 	private Polynomial myPoly;
 	
 	public Gates(Polynomial thePoly) {
@@ -17,24 +17,29 @@ public class Gates {
 	 * @param b Second share
 	 * @return Sum of two shares
 	 */
-	public int additionGate(int a, int b) {
-		return a + b;
+	public static void additionGate(Player[] players, int a, int b) {
+		for(Player p : players) {
+			p.setY((p.getShares()[a] + p.getShares()[b]) % PRIME); 
+		}
+		
 	}
 	
 	/**
 	 * Multiply-By-Constant gate takes a share and a constant, returning the sum.
 	 * 
 	 * @param a Share
-	 * @param b Multiplying constant
+	 * @param constant Multiplying constant
 	 * @return Product of the share and constant
 	 */
-	public int multiplyByConst(int a, int b) {
-		return a * b;
+	public static void multiplyByConst(Player[] players, int a, int constant) {
+		for(Player p : players) {
+			p.setY((p.getShares()[a] * constant) % PRIME); 
+		}
 	}
 	
 	public int multiply(int a, int b) {
-		int y = 0;
-		
-		return y;
+		int ab = a * b;
+		// ?????
+		return ab;
 	}
 }
