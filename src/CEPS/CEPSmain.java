@@ -1,5 +1,7 @@
 package CEPS;
 
+import java.util.Arrays; // Delete this eventually
+
 import computation.Gates;
 import computation.Polynomial;
 
@@ -18,20 +20,50 @@ public class CEPSmain {
 		
 		shareInputs(players);
 		
+		// Print Player's information: Polynomial & Shares
+		int count = 0;
 		for(Player p : players) {
-			int a = p.getShares()[0];
-			int b = p.getShares()[1];
-			System.out.println(a + ", " + b);
+			System.out.println("Player: " + count);
+			System.out.println(p.getPoly().toString());
+			System.out.println(Arrays.toString(p.getShares()));
+			System.out.println("");
+			count++;
 		}
+		
+		System.out.println("\nAddition Gate on index 0 & 1:");
 		
 		Gates.additionGate(players, 0, 1);
 		
+		// Print value after addition gate
+		count = 0;
 		for(Player p : players) {
-			System.out.println(p.getY());
+			System.out.println("Player: " + count + " Sum: " + p.getY());
+			count++;
 		}
+		System.out.println("");
 		
+		System.out.println("\nMultiplication-by-constant by 2 on index 2:");
 		
+		Gates.multiplyByConst(players, 2, 2);
 		
+		// Print value after Multiplication gate
+		count = 0;
+		for(Player p : players) {
+			System.out.println("Player: " + count + " Product: " + p.getY());
+			count++;
+		}
+		System.out.println("");
+		
+		System.out.println("\nMultiplication on index 3 & 4:");
+		
+		Gates.multiply(players, 3, 4);
+		
+		// Print value after multiplication gate
+		count = 0;
+		for(Player p : players) {
+			System.out.println("Player: " + count + " Product: " + p.getY());
+			count++;
+		}
 	}
 	
 	

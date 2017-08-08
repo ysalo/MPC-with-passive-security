@@ -22,6 +22,9 @@ public class Player {
 	}
 	
 	/* ***** GETTERS & SETTERS ***** */
+	public Polynomial getPoly() {
+		return myPoly; // Return a copy????
+	}
 	
 	public int[] getInput() {
 		return myInput; // Return a copy????
