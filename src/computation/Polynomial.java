@@ -52,10 +52,7 @@ public class Polynomial {
     	for(int i = 1; i <= theDegree; i++) {
     		coefs[i] = rand.nextInt(PRIME);
     	}
-    	//append the constant(secret) term
-    	
     	Polynomial p = new Polynomial(theDegree, coefs);
-    	
     	return p;
     }
     
@@ -64,7 +61,7 @@ public class Polynomial {
      * @param theNumP the number of players.
      * @return array of shares.
      */
-    public final int[] compute_shares(final int theNumP) {
+    public final int[] computeShares(final int theNumP) {
     	final int[] shares = new int[theNumP];
     	//polynomial(0) = the secret
     	for(int i = 1; i <= theNumP; i++) {
