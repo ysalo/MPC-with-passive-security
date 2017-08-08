@@ -4,7 +4,7 @@ import java.security.SecureRandom;
 import java.util.Random;
 
 public class Polynomial {
-	private static final int PRIME = 127; //TODO generate a prime randomly
+	private static final int PRIME = 11; //TODO generate a prime randomly
 	private final int[] myCoefs;
 	private final int myDegree;
 	
@@ -30,10 +30,13 @@ public class Polynomial {
     	if(theVal <= 0)
         	throw new IllegalArgumentException("Cannot evaluate at less than 1!");
     	int result = 0;
-        for (int c : myCoefs) {
-        	result = result * theVal + c;
+        
+    	//Since this polynomial is in ascending order we want to evaluate it 
+    	//in the reverse order.
+        for (int i = myCoefs.length -1 ; i >= 0; i--)
+            result = result*theVal + myCoefs[i];
         	result = result % PRIME;
-        }
+  
         return result;
     }
     /**
@@ -45,6 +48,11 @@ public class Polynomial {
      * @return a random polynomial of desired degree.
      */
     public static final Polynomial randPoly(final int theConst, final int theDegree) {
+    	
+    	if(theConst >= PRIME || theConst < 0) {
+    		throw new IllegalArgumentException("The secret is outside the field");
+    	}
+    	
     	final Random rand = new SecureRandom();
     	//one more coefficient than the degree 
     	final int[] coefs = new int[theDegree + 1]; 
@@ -92,5 +100,9 @@ public class Polynomial {
         	}
         }
         return sb.toString();
+    }
+    
+    public final int[] getCoefs() {
+    	return myCoefs;
     }
 }
