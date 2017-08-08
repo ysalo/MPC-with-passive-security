@@ -37,9 +37,9 @@ public class Gates {
 		}
 	}
 	
-	public int multiply(int a, int b) {
-		int ab = a * b;
-		// ?????
-		return ab;
+	public static void multiply(Player[] players, int a, int b) {
+		for(Player p : players) {
+			p.setY((p.getShares()[a] * p.getShares()[b]) % PRIME); 
+		}
 	}
 }

@@ -4,7 +4,7 @@ import java.security.SecureRandom;
 import java.util.Random;
 
 public class Polynomial {
-	private static final int PRIME = 11; //TODO generate a prime randomly
+	private static final int PRIME = 127; //TODO generate a prime randomly
 	private final int[] myCoefs;
 	private final int myDegree;
 	
