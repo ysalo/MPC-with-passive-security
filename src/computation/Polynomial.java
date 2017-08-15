@@ -121,7 +121,9 @@ public class Polynomial {
     }
     
     /**
-     *
+     * Method that multiplies this polynomial by theP2.
+     * @param theP2 the polynomial to multiply this polynomial by.
+     * @return the result of multiplying this polynomial by theP2.
      */
     public final Polynomial multiply(final Polynomial theP2) {
     	final Polynomial p1 =  this;
