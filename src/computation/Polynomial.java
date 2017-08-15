@@ -25,6 +25,11 @@ public class Polynomial {
 		myCoefs = theCoefs;
 	}
 	
+	public Polynomial(final int theDegree){
+		myDegree = theDegree;
+		myCoefs = new int[myDegree];
+	}
+	
     /**
      * @return the degree of this polynomial.
      */
@@ -105,13 +110,29 @@ public class Polynomial {
      * @param theY the y.
      * @throws BigInteger not invertible if there is  no
      * multiplicative inverse.
-     * @return the inverse of x and y.
+     * @return the multiplicative inverse of x and y.
      */
     //TODO make a better implementation without casting.
     public final int inverseMod(final int theX, final int theY) {
     	final BigInteger bX = BigInteger.valueOf(theX);
     	final BigInteger bY = BigInteger.valueOf(theY);
     	final int result = bX.modInverse(bY).intValue();
+    	return result;
+    }
+    
+    /**
+     *
+     */
+    public final Polynomial multiply(final Polynomial theP2) {
+    	final Polynomial p1 =  this;
+    	final int degree = p1.myDegree +  theP2.myDegree;
+    	final Polynomial result = new Polynomial(degree + 1);
+    	
+    	for (int i = 0; i <= p1.myDegree; i++){
+    		for (int j = 0; j <= theP2.myDegree; j++) {
+    			result.myCoefs[i+j] += (p1.myCoefs[i] * theP2.myCoefs[j]);
+    		}
+    	}
     	return result;
     }
     
@@ -126,7 +147,7 @@ public class Polynomial {
     public final String toString() {
         final StringBuilder sb = new StringBuilder();
         sb.append("f(x) = ");
-    	for(int i = 0; i <= myDegree; i++) {
+    	for(int i = 0; i < myCoefs.length; i++) {
         	if(myCoefs[i] == 0) continue;
         	else {
         		if(i == 0) sb.append(myCoefs[i]);
@@ -138,4 +159,15 @@ public class Polynomial {
         }
         return sb.toString();
     }
+    
+    public static void main(String[] args) {
+    	Polynomial p1 = new Polynomial(1, new int[] {3, 1});
+    	Polynomial p2 = new Polynomial(1, new int[] {-2, 1});
+    	Polynomial result = p1.multiply(p2);
+    	System.out.println(p1);
+    	System.out.println(p2);
+    	System.out.println(result);
+    }
+    
+    	
 }
