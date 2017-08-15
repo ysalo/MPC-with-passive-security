@@ -1,14 +1,20 @@
 package computation;
 
+import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Random;
 
+/**
+ * Represent a polynomial used for secret sharing.
+ */
 public class Polynomial {
+	/** The field prime. */
 	private static final int PRIME = 127; //TODO generate a prime randomly
+	/** The coefficients of the polynomial. */
 	private final int[] myCoefs;
+	/** The degree of the polynomial. */
 	private final int myDegree;
-	
-	
+
 	/**
 	 * Class constructor.
 	 * @param theDegree degree of polynomial.
@@ -19,6 +25,20 @@ public class Polynomial {
 		myCoefs = theCoefs;
 	}
 	
+    /**
+     * @return the degree of this polynomial.
+     */
+    public final int getDegree() {
+    	return myDegree;
+    }
+	
+    /**
+     * @return the coefficients of this polynomial.
+     */
+    public final int[] getCoefs() {
+    	return myCoefs;
+    }
+	
 	/**
 	 * Compute the polynomial using Horner's Rule
 	 * and applying mod operator for field arithmetic.
@@ -26,19 +46,19 @@ public class Polynomial {
 	 * @return the result of computation.
 	 */
     public final int modCompute(final int theVal) {
-        //Evaluating at 0 will reveal the secret.
     	if(theVal <= 0)
         	throw new IllegalArgumentException("Cannot evaluate at less than 1!");
     	int result = 0;
         
     	//Since this polynomial is in ascending order we want to evaluate it 
     	//in the reverse order.
-        for (int i = myCoefs.length -1 ; i >= 0; i--)
-            result = result*theVal + myCoefs[i];
+        for (int i = myCoefs.length - 1; i >= 0; i--)
+            result = result * theVal + myCoefs[i];
         	result = result % PRIME;
   
         return result;
     }
+    
     /**
      * Generate a random polynomial to represent the secret (constant)
      * term. 
@@ -60,24 +80,41 @@ public class Polynomial {
     	for(int i = 1; i <= theDegree; i++) {
     		coefs[i] = rand.nextInt(PRIME);
     	}
-    	Polynomial p = new Polynomial(theDegree, coefs);
+    	final Polynomial p = new Polynomial(theDegree, coefs);
     	return p;
     }
     
     /**
      * Compute the shares of the polynomial.
-     * @param theNumP the number of players.
+     * @param theShareNum the number of shares desired.
      * @return array of shares.
      */
-    public final int[] computeShares(final int theNumP) {
-    	final int[] shares = new int[theNumP];
+    public final int[] computeShares(final int theShareNum) {
+    	final int[] shares = new int[theShareNum];
     	//polynomial(0) = the secret
-    	for(int i = 1; i <= theNumP; i++) {
+    	for(int i = 1; i <= theShareNum; i++) {
     		shares[i - 1] = modCompute(i);
     	}
     	return shares;
     }
-    //TODO maybe will have to delete this method.
+    
+    /**
+     * Compute the modular inverse of theX and theY using 
+     * BigInteger method.
+     * @param theX the x.
+     * @param theY the y.
+     * @throws BigInteger not invertible if there is  no
+     * multiplicative inverse.
+     * @return the inverse of x and y.
+     */
+    //TODO make a better implementation without casting.
+    public final int inverseMod(final int theX, final int theY) {
+    	final BigInteger bX = BigInteger.valueOf(theX);
+    	final BigInteger bY = BigInteger.valueOf(theY);
+    	final int result = bX.modInverse(bY).intValue();
+    	return result;
+    }
+    
     /**
      * String representation of a polynomial with 
      * the constant term being the first in the list.
@@ -91,7 +128,7 @@ public class Polynomial {
         sb.append("f(x) = ");
     	for(int i = 0; i <= myDegree; i++) {
         	if(myCoefs[i] == 0) continue;
-        	else { //perhaps simplify
+        	else {
         		if(i == 0) sb.append(myCoefs[i]);
         		else if(i == 1 && myCoefs[i] != 1) sb.append(" + " + myCoefs[i] + "x");
         		else if(i == 1 && myCoefs[i] == 1) sb.append(" + " + "x");
@@ -100,9 +137,5 @@ public class Polynomial {
         	}
         }
         return sb.toString();
-    }
-    
-    public final int[] getCoefs() {
-    	return myCoefs;
     }
 }
