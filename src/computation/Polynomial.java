@@ -4,12 +4,17 @@ import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Random;
 
+//TODO fix how the degree is being set.	
+//TODO generate a prime randomly maybe.
+//TODO maybe a better way to do multiplication.
+//TODO make a better implementation of inverse mod.
+//TODO probably prevent negative instantiation.
 /**
  * Represent a polynomial used for secret sharing.
  */
 public class Polynomial {
 	/** The field prime. */
-	private static final int PRIME = 127; //TODO generate a prime randomly
+	private static final int PRIME = 127; 
 	/** The coefficients of the polynomial. */
 	private final int[] myCoefs;
 	/** The degree of the polynomial. */
@@ -27,7 +32,7 @@ public class Polynomial {
 	
 	public Polynomial(final int theDegree){
 		myDegree = theDegree;
-		myCoefs = new int[myDegree];
+		myCoefs = new int[myDegree + 1]; //number of coefficients is +1 the degree
 	}
 	
     /**
@@ -58,16 +63,13 @@ public class Polynomial {
     	//Since this polynomial is in ascending order we want to evaluate it 
     	//in the reverse order.
         for (int i = myCoefs.length - 1; i >= 0; i--)
-            result = result * theVal + myCoefs[i];
-        	result = result % PRIME;
-  
+            result = posMod(result * theVal + myCoefs[i]);
         return result;
     }
     
     /**
      * Generate a random polynomial to represent the secret (constant)
-     * term. 
-     * TODO add prime generation.
+     * term.
      * @param theConst the secret.
      * @param theDegree the degree of the polynomial.
      * @return a random polynomial of desired degree.
@@ -112,8 +114,7 @@ public class Polynomial {
      * multiplicative inverse.
      * @return the multiplicative inverse of x and y.
      */
-    //TODO make a better implementation without casting.
-    public final int inverseMod(final int theX, final int theY) {
+    public static final int inverseMod(final int theX, final int theY) {
     	final BigInteger bX = BigInteger.valueOf(theX);
     	final BigInteger bY = BigInteger.valueOf(theY);
     	final int result = bX.modInverse(bY).intValue();
@@ -128,19 +129,32 @@ public class Polynomial {
     public final Polynomial multiply(final Polynomial theP2) {
     	final Polynomial p1 =  this;
     	final int degree = p1.myDegree +  theP2.myDegree;
-    	final Polynomial result = new Polynomial(degree + 1);
-    	
-    	for (int i = 0; i <= p1.myDegree; i++){
-    		for (int j = 0; j <= theP2.myDegree; j++) {
-    			result.myCoefs[i+j] += (p1.myCoefs[i] * theP2.myCoefs[j]);
-    		}
+    	final Polynomial result = new Polynomial(degree);
+    	for (int i = 0; i < p1.myCoefs.length; i++){
+    		for (int j = 0; j < theP2.myCoefs.length; j++) {
+    			result.myCoefs[i + j] += p1.myCoefs[i] * theP2.myCoefs[j];
+    		}	
+    	}    	
+    	for(int i = 0; i < result.myCoefs.length ; i++) { //mod the resulting coefs by the PRIME.
+    		result.myCoefs[i] = posMod(result.myCoefs[i]);
     	}
     	return result;
     }
     
     /**
-     * String representation of a polynomial with 
-     * the constant term being the first in the list.
+     * remainder >= 0.
+     * @param theX theX mod PRIME.
+     * @return the remainder.
+     */
+    private final int posMod(final int theX) {
+    	int r = theX % PRIME;
+    	if (r < 0) r += PRIME;
+    	return r;
+    }
+    
+    /**
+     * String representation of a polynomial in
+     * ascending order of degree.
      * example:
      * 		[1,2,3,4]
      * 		f(x) = 1 + 2x + 3x^2 + 4x^3
@@ -156,20 +170,32 @@ public class Polynomial {
         		else if(i == 1 && myCoefs[i] != 1) sb.append(" + " + myCoefs[i] + "x");
         		else if(i == 1 && myCoefs[i] == 1) sb.append(" + " + "x");
         		else if(i > 1 && myCoefs[i] != 1) sb.append(" + " + myCoefs[i] + "x^" + i);
-        		else if(i > 1 && myCoefs[i] == 1) sb.append(" + " + "x^" + i);
+        		else if(i > 1 && myCoefs[i] == 1) sb.append(" + " + "x^" + i); 		
         	}
         }
         return sb.toString();
-    }
-    
-    public static void main(String[] args) {
-    	Polynomial p1 = new Polynomial(1, new int[] {3, 1});
-    	Polynomial p2 = new Polynomial(1, new int[] {-2, 1});
-    	Polynomial result = p1.multiply(p2);
-    	System.out.println(p1);
-    	System.out.println(p2);
-    	System.out.println(result);
-    }
-    
-    	
+    }    
+//    
+//    public static void main(String[] args) {
+//    	final Polynomial p1 = Polynomial.randPoly(6, 2);
+//    	System.out.println("The degree of p1 : " + p1.getDegree() + "\t" + p1);
+//    	final Polynomial p2 = Polynomial.randPoly(3, 2);
+//    	System.out.println("The degree of p2 : " + p2.getDegree() + "\t" + p2);
+//    	final Polynomial p3 = p2.multiply(p1);
+//    	System.out.println("The degree of p3 : " + p3.getDegree() + "\t" + p3);
+//    	System.out.println("------------------------------------------------------------------");
+//    	System.out.println("The shares in p3: ");
+//    	for(int i = 1; i <= 5; i++) {
+//    		System.out.println("share #" + i + ": " + p3.modCompute(i));
+//    	}
+//    	System.out.println("------------------------------------------------------------------");
+////		book example change PRIME = 11
+////    	final int[] coefs = new int [] {7,4,1};
+////    	final Polynomial poly = new Polynomial(2, coefs);
+////    	System.out.println("The degree of poly : " + poly.getDegree() + "\t" + poly);
+////    	System.out.println("The shares are of poly: ");
+////    	for(int i = 1; i <= 5; i++) {
+////    		System.out.println("share #" + i + ": " + poly.modCompute(i));
+////    	}
+//    }
 }
