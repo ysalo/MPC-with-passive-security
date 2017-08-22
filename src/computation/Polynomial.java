@@ -142,6 +142,16 @@ public class Polynomial {
     }
     
     /**
+     * Multiply the polynomial by a constant.
+     * @param theConst the constant.
+     */
+    public final void multConst(final int theConst) {
+    	for(int i = 0; i < myCoefs.length; i++) {
+    		myCoefs[i] = (myCoefs[i] * theConst) % PRIME;
+    	}
+    }
+    
+    /**
      * remainder >= 0.
      * @param theX theX mod PRIME.
      * @return the remainder.
@@ -175,7 +185,7 @@ public class Polynomial {
         }
         return sb.toString();
     }    
-//    
+    
 //    public static void main(String[] args) {
 //    	final Polynomial p1 = Polynomial.randPoly(6, 2);
 //    	System.out.println("The degree of p1 : " + p1.getDegree() + "\t" + p1);
@@ -189,13 +199,14 @@ public class Polynomial {
 //    		System.out.println("share #" + i + ": " + p3.modCompute(i));
 //    	}
 //    	System.out.println("------------------------------------------------------------------");
-////		book example change PRIME = 11
-////    	final int[] coefs = new int [] {7,4,1};
-////    	final Polynomial poly = new Polynomial(2, coefs);
-////    	System.out.println("The degree of poly : " + poly.getDegree() + "\t" + poly);
-////    	System.out.println("The shares are of poly: ");
-////    	for(int i = 1; i <= 5; i++) {
-////    		System.out.println("share #" + i + ": " + poly.modCompute(i));
-////    	}
-//    }
+//    	
+//		book example change PRIME = 11
+//    	final int[] coefs = new int [] {7,4,1};
+//    	final Polynomial poly = new Polynomial(2, coefs);
+//    	System.out.println("The degree of poly : " + poly.getDegree() + "\t" + poly);
+//    	System.out.println("The shares are of poly: ");
+//    	for(int i = 1; i <= 5; i++) {
+//    		System.out.println("share #" + i + ": " + poly.modCompute(i));
+//    	}
+//   }
 }
