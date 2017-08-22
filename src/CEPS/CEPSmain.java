@@ -3,7 +3,6 @@ package CEPS;
 import java.util.Arrays; // Delete this eventually
 
 import computation.Gates;
-import computation.Polynomial;
 
 public class CEPSmain {
 
