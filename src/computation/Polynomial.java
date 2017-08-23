@@ -147,7 +147,7 @@ public class Polynomial {
      */
     public final void multConst(final int theConst) {
     	for(int i = 0; i < myCoefs.length; i++) {
-    		myCoefs[i] = (myCoefs[i] * theConst) % PRIME;
+    		myCoefs[i] = posMod(myCoefs[i] * theConst);
     	}
     }
     
@@ -156,7 +156,7 @@ public class Polynomial {
      * @param theX theX mod PRIME.
      * @return the remainder.
      */
-    private final int posMod(final int theX) {
+    public static final int posMod(final int theX) {
     	int r = theX % PRIME;
     	if (r < 0) r += PRIME;
     	return r;
