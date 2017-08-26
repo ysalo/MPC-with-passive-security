@@ -39,7 +39,38 @@ public class Polynomial {
 		myDegree = theDegree;
 		myCoefs = new int[myDegree + 1]; //number of coefficients is +1 the degree
 	}
-		
+	
+    /**
+     * @return the degree of this polynomial.
+     */
+    public final int getDegree() {
+    	return myDegree;
+    }
+	
+    /**
+     * @return the coefficients of this polynomial.
+     */
+    public final int[] getCoefs() {
+    	return myCoefs;
+    }
+	
+    /**
+     * Generate a random polynomial to represent the secret.
+     * @param theSecret the secret.
+     * @param theDegree the degree of the polynomial.
+     * @return a random polynomial of desired degree.
+     */
+   	private final int[] randPoly(final int theSecret, final int theDegree) {
+    	final Random rand = new SecureRandom();
+    	//one more coefficient than the degree 
+    	final int[] coefs = new int[theDegree + 1]; 
+    	coefs[0] = theSecret;
+    	for(int i = 1; i <= theDegree; i++) {
+    		coefs[i] = rand.nextInt(PRIME);
+    	}
+    	return coefs;
+    }
+	
 	/**
 	 * Compute the polynomial using Horner's Rule
 	 * and applying mod operator for field arithmetic.
@@ -57,24 +88,7 @@ public class Polynomial {
             result = posMod(result * theVal + myCoefs[i]);
         return result;
     }
-    
-    /**
-     * Generate a random polynomial to represent the secret.
-     * @param theSecret the secret.
-     * @param theDegree the degree of the polynomial.
-     * @return a random polynomial of desired degree.
-     */
-   	private final int[] randPoly(final int theSecret, final int theDegree) {
-    	final Random rand = new SecureRandom();
-    	//one more coefficient than the degree 
-    	final int[] coefs = new int[theDegree + 1]; 
-    	coefs[0] = theSecret;
-    	for(int i = 1; i <= theDegree; i++) {
-    		coefs[i] = rand.nextInt(PRIME);
-    	}
-    	return coefs;
-    }
-    
+
     /**
      * Compute the shares of the polynomial.
      * @param theShareNum the number of shares desired.
@@ -88,23 +102,7 @@ public class Polynomial {
     	}
     	return shares;
     }
-    
-    /**
-     * Compute the modular inverse of theX and theY using 
-     * BigInteger method.
-     * @param theX the x.
-     * @param theY the y.
-     * @throws BigInteger not invertible if there is  no
-     * multiplicative inverse.
-     * @return the multiplicative inverse of x and y.
-     */
-    public static final int inverseMod(final int theX, final int theY) {
-    	final BigInteger bX = BigInteger.valueOf(theX);
-    	final BigInteger bY = BigInteger.valueOf(theY);
-    	final int result = bX.modInverse(bY).intValue();
-    	return result;
-    }
-    
+        
     /**
      * Create a new polynomial which is the result of multiplication.
      * @param theP2 the polynomial to multiply this polynomial by.
@@ -135,6 +133,22 @@ public class Polynomial {
     }
     
     /**
+     * Compute the modular inverse of theX and theY using 
+     * BigInteger method.
+     * @param theX the x.
+     * @param theY the y.
+     * @throws BigInteger not invertible if there is  no
+     * multiplicative inverse.
+     * @return the multiplicative inverse of x and y.
+     */
+    public static final int inverseMod(final int theX, final int theY) {
+    	final BigInteger bX = BigInteger.valueOf(theX);
+    	final BigInteger bY = BigInteger.valueOf(theY);
+    	final int result = bX.modInverse(bY).intValue();
+    	return result;
+    }
+    
+    /**
      * remainder >= 0.
      * @param theX theX mod PRIME.
      * @return the remainder.
@@ -144,21 +158,6 @@ public class Polynomial {
     	if (r < 0) r += PRIME;
     	return r;
     }
-    
-    /**
-     * @return the degree of this polynomial.
-     */
-    public final int getDegree() {
-    	return myDegree;
-    }
-	
-    /**
-     * @return the coefficients of this polynomial.
-     */
-    public final int[] getCoefs() {
-    	return myCoefs;
-    }
-    
     /**
      * String representation of a polynomial in
      * ascending order of degree.
