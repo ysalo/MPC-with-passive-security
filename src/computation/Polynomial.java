@@ -5,9 +5,7 @@ import java.security.SecureRandom;
 import java.util.Random;
 
 //TODO fix how the degree is being set.	
-//TODO generate a prime randomly maybe.
 //TODO maybe a better way to do multiplication.
-//TODO make a better implementation of inverse mod.
 //TODO probably prevent negative instantiation.
 /**
  * Represent a polynomial used for secret sharing.
@@ -19,36 +17,29 @@ public class Polynomial {
 	private final int[] myCoefs;
 	/** The degree of the polynomial. */
 	private final int myDegree;
-
+	
 	/**
-	 * Class constructor.
-	 * @param theDegree degree of polynomial.
-	 * @param theCoefs the coefficients of the polynomial.
+	 * Class constructor, creates a random polynomial of desired degree.
+	 * @param theSecret players secret share.
+	 * @param theDegree the degree of the polynomial.
 	 */
-	public Polynomial(final int theDegree, final int[] theCoefs) {
+	public Polynomial(final int theSecret, final int theDegree) {
+    	if(theSecret >= PRIME || theSecret < 0) {
+    		throw new IllegalArgumentException("The secret is outside the field");
+    	}
+		myCoefs = randPoly(theSecret, theDegree);
 		myDegree = theDegree;
-		myCoefs = theCoefs;
 	}
 	
-	public Polynomial(final int theDegree){
+	/**
+	 * Used in class methods.
+	 * @param theDegree the degree.
+	 */
+	private Polynomial(final int theDegree){
 		myDegree = theDegree;
 		myCoefs = new int[myDegree + 1]; //number of coefficients is +1 the degree
 	}
-	
-    /**
-     * @return the degree of this polynomial.
-     */
-    public final int getDegree() {
-    	return myDegree;
-    }
-	
-    /**
-     * @return the coefficients of this polynomial.
-     */
-    public final int[] getCoefs() {
-    	return myCoefs;
-    }
-	
+		
 	/**
 	 * Compute the polynomial using Horner's Rule
 	 * and applying mod operator for field arithmetic.
@@ -68,27 +59,20 @@ public class Polynomial {
     }
     
     /**
-     * Generate a random polynomial to represent the secret (constant)
-     * term.
-     * @param theConst the secret.
+     * Generate a random polynomial to represent the secret term.
+     * @param theSecret the secret.
      * @param theDegree the degree of the polynomial.
      * @return a random polynomial of desired degree.
      */
-    public static final Polynomial randPoly(final int theConst, final int theDegree) {
-    	
-    	if(theConst >= PRIME || theConst < 0) {
-    		throw new IllegalArgumentException("The secret is outside the field");
-    	}
-    	
+    private final int[] randPoly(final int theSecret, final int theDegree) {
     	final Random rand = new SecureRandom();
-    	//one more coefficient than the degree 
+    	//+1 more coefs than the degree 
     	final int[] coefs = new int[theDegree + 1]; 
-    	coefs[0] = theConst;
+    	coefs[0] = theSecret;
     	for(int i = 1; i <= theDegree; i++) {
     		coefs[i] = rand.nextInt(PRIME);
     	}
-    	final Polynomial p = new Polynomial(theDegree, coefs);
-    	return p;
+    	return coefs;
     }
     
     /**
@@ -98,7 +82,6 @@ public class Polynomial {
      */
     public final int[] computeShares(final int theShareNum) {
     	final int[] shares = new int[theShareNum];
-    	//polynomial(0) = the secret
     	for(int i = 1; i <= theShareNum; i++) {
     		shares[i - 1] = modCompute(i);
     	}
@@ -114,7 +97,7 @@ public class Polynomial {
      * multiplicative inverse.
      * @return the multiplicative inverse of x and y.
      */
-    public static final int inverseMod(final int theX, final int theY) {
+    public final int inverseMod(final int theX, final int theY) {
     	final BigInteger bX = BigInteger.valueOf(theX);
     	final BigInteger bY = BigInteger.valueOf(theY);
     	final int result = bX.modInverse(bY).intValue();
@@ -122,32 +105,32 @@ public class Polynomial {
     }
     
     /**
-     * Method that multiplies this polynomial by theP2.
+     * Returns a new polynomial which is the result of multiplication.
      * @param theP2 the polynomial to multiply this polynomial by.
      * @return the result of multiplying this polynomial by theP2.
      */
     public final Polynomial multiply(final Polynomial theP2) {
     	final Polynomial p1 =  this;
-    	final int degree = p1.myDegree +  theP2.myDegree;
+    	final int degree = myDegree +  theP2.myDegree;
     	final Polynomial result = new Polynomial(degree);
-    	for (int i = 0; i < p1.myCoefs.length; i++){
+    	for (int i = 0; i < myCoefs.length; i++){
     		for (int j = 0; j < theP2.myCoefs.length; j++) {
     			result.myCoefs[i + j] += p1.myCoefs[i] * theP2.myCoefs[j];
     		}	
     	}    	
-    	for(int i = 0; i < result.myCoefs.length ; i++) { //mod the resulting coefs by the PRIME.
-    		result.myCoefs[i] = posMod(result.myCoefs[i]);
+    	for(int i = 0; i < result.myCoefs.length ; i++) { 
+    		result.myCoefs[i] = posMod(result.myCoefs[i]); //mod the resulting coefs by the PRIME.
     	}
     	return result;
     }
     
     /**
-     * Multiply the polynomial by a constant.
+     * Multiplies this polynomial by the constant.
      * @param theConst the constant.
      */
     public final void multConst(final int theConst) {
     	for(int i = 0; i < myCoefs.length; i++) {
-    		myCoefs[i] = (myCoefs[i] * theConst) % PRIME;
+    		myCoefs[i] = posMod((myCoefs[i] * theConst));
     	}
     }
     
@@ -156,10 +139,24 @@ public class Polynomial {
      * @param theX theX mod PRIME.
      * @return the remainder.
      */
-    private final int posMod(final int theX) {
+    public static final int posMod(final int theX) {
     	int r = theX % PRIME;
     	if (r < 0) r += PRIME;
     	return r;
+    }
+    
+    /**
+     * @return the degree of this polynomial.
+     */
+    public final int getDegree() {
+    	return myDegree;
+    }
+	
+    /**
+     * @return the coefficients of this polynomial.
+     */
+    public final int[] getCoefs() {
+    	return myCoefs;
     }
     
     /**
@@ -185,28 +182,4 @@ public class Polynomial {
         }
         return sb.toString();
     }    
-    
-//    public static void main(String[] args) {
-//    	final Polynomial p1 = Polynomial.randPoly(6, 2);
-//    	System.out.println("The degree of p1 : " + p1.getDegree() + "\t" + p1);
-//    	final Polynomial p2 = Polynomial.randPoly(3, 2);
-//    	System.out.println("The degree of p2 : " + p2.getDegree() + "\t" + p2);
-//    	final Polynomial p3 = p2.multiply(p1);
-//    	System.out.println("The degree of p3 : " + p3.getDegree() + "\t" + p3);
-//    	System.out.println("------------------------------------------------------------------");
-//    	System.out.println("The shares in p3: ");
-//    	for(int i = 1; i <= 5; i++) {
-//    		System.out.println("share #" + i + ": " + p3.modCompute(i));
-//    	}
-//    	System.out.println("------------------------------------------------------------------");
-//    	
-//		book example change PRIME = 11
-//    	final int[] coefs = new int [] {7,4,1};
-//    	final Polynomial poly = new Polynomial(2, coefs);
-//    	System.out.println("The degree of poly : " + poly.getDegree() + "\t" + poly);
-//    	System.out.println("The shares are of poly: ");
-//    	for(int i = 1; i <= 5; i++) {
-//    		System.out.println("share #" + i + ": " + poly.modCompute(i));
-//    	}
-//   }
 }

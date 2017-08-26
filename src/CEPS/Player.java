@@ -11,7 +11,7 @@ public class Player {
 	
 	
 	public Player(int secret, int players) {
-		myPoly = Polynomial.randPoly(secret, players / 2);
+		myPoly = new Polynomial(secret, players / 2);
 		myInput = myPoly.computeShares(players);
 		myShares = new int[players];
 		myY = 0; //?????
