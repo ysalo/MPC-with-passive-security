@@ -19,7 +19,7 @@ public class Gates {
 	 */
 	public static void additionGate(Player[] players, int a, int b) {
 		for(Player p : players) {
-			p.setY((p.getShares()[a] + p.getShares()[b]) % PRIME); 
+			p.setY((Polynomial.posMod(p.getShares()[a] + p.getShares()[b]))); 
 		}
 		
 	}
@@ -33,13 +33,13 @@ public class Gates {
 	 */
 	public static void multiplyByConst(Player[] players, int a, int constant) {
 		for(Player p : players) {
-			p.setY((p.getShares()[a] * constant) % PRIME); 
+			p.setY(Polynomial.posMod((p.getShares()[a] * constant))); 
 		}
 	}
 	
 	public static void multiply(Player[] players, int a, int b) {
 		for(Player p : players) {
-			p.setY((p.getShares()[a] * p.getShares()[b]) % PRIME); 
+			p.setY(Polynomial.posMod((p.getShares()[a] * p.getShares()[b]))); 
 		}
 	}
 }
