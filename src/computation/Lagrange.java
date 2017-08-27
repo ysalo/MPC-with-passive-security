@@ -22,9 +22,9 @@ public class Lagrange {
 	    Polynomial result = null;
 	    int count = 0;
 	    for(int i: thePlayers) {
-		    Polynomial temp = null;
+	        Polynomial temp = null;
 	        for(int j: thePlayers) {
-		        if(i != j) {
+	            if(i != j) {
 		            if(temp == null) temp = new Polynomial(new int[] {-j, 1}, 1);
 		            else temp = temp.multiply(new Polynomial(new int[] {-j, 1}, 1));
 		            temp.multConst(Polynomial.inverseMod(i - j, Polynomial.PRIME));
