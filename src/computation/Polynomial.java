@@ -11,7 +11,7 @@ import java.util.Random;
  */
 public class Polynomial {
     /** The field prime. */
-    private static final int PRIME = 127;
+    public static final int PRIME = 127;
     /** The coefficients of the polynomial. */
     private final int[] myCoefs;
     /** The degree of the polynomial. */
@@ -31,6 +31,16 @@ public class Polynomial {
         myDegree = theDegree;
     }
 
+    /**
+     * Used by package methods.
+     * @param theCoefs the coefficients.
+     * @param theDegree the degree.
+     */
+    protected Polynomial(int[] theCoefs, int theDegree) {
+        myCoefs = theCoefs;
+        myDegree = theDegree;
+    }
+  
     /**
      * Used by class methods.
      * @param theDegree the degree.
@@ -63,8 +73,6 @@ public class Polynomial {
      * @return the result of computation.
      */
     public final int modCompute(final int theVal) {
-        if (theVal <= 0)
-            throw new IllegalArgumentException("Cannot evaluate at less than 1!");
         int result = 0;
         // polynomial is in ascending order
         for (int i = myCoefs.length - 1; i >= 0; i--)
@@ -85,6 +93,17 @@ public class Polynomial {
         return shares;
     }
 
+    /**
+     * Create a new polynomial the result of this + theP2
+     */
+    public final Polynomial add(final Polynomial theP2) {
+        Polynomial result = new Polynomial(Math.max(myDegree, theP2.myDegree));
+        for(int i = 0; i <= myDegree; i++) { //this could be a problem.
+            result.myCoefs[i] = posMod(myCoefs[i] + theP2.myCoefs[i]);
+        }
+        return result;
+    }
+    
     /**
      * Create a new polynomial the result of this * theP2.
      * @param theP2 the polynomial to multiply this polynomial by.
@@ -137,6 +156,15 @@ public class Polynomial {
         return r;
     }
 
+    public final boolean isZero() {
+        for(int i =0; i < myCoefs.length; i++) {
+            if(myCoefs[i] != 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
     /**
      * String representation of a polynomial in ascending order of degree.
      * example: [1,2,3,4] f(x) = 1 + 2x + 3x^2 + 4x^3
@@ -156,5 +184,56 @@ public class Polynomial {
             }
         }
         return sb.toString();
+    }
+    
+    public static final void main(String[] args) {
+        final int[] coefs = new int[] {7,4,1,};
+        final Polynomial p1 = new Polynomial(coefs, 2);
+        System.out.println(p1);
+        final int[] shares = p1.computeShares(5);
+        int count = 1;
+        for(int x: shares) {
+            System.out.println("Share"  + " " + count + ": " + x);
+            count++;
+        }
+        System.out.println("------------------------------------------------------");
+        final int[] coefs1 = new int[] {-4,1};
+        final Polynomial p2 = new Polynomial(coefs1, 1);
+        final int[] coefs2 = new int[] {-5,1};
+        final Polynomial p3 = new Polynomial(coefs2, 1);
+        final Polynomial p4 = p2.multiply(p3);
+        p4.multConst(inverseMod(2,PRIME));
+        System.out.println("The p2: " + p2);
+        System.out.println("The p3: " + p3);
+        System.out.println("The p4: " + p4);
+        System.out.println("------------------------------------------------------");
+        final int[] coefs3 = new int[] {-3,1};
+        final Polynomial p5 = new Polynomial(coefs3, 1);
+        final int[] coefs4 = new int[] {-5,1};
+        final Polynomial p6 = new Polynomial(coefs4, 1);
+        final Polynomial p7 = p5.multiply(p6);
+        p7.multConst(inverseMod(-1,PRIME));
+        System.out.println("The p5: " + p5);
+        System.out.println("The p6: " + p6);
+        System.out.println("The p7: " + p7);
+        System.out.println("------------------------------------------------------");
+        final int[] coefs5 = new int[] {-3,1};
+        final Polynomial p8 = new Polynomial(coefs5, 1);
+        final int[] coefs6 = new int[] {-4,1};
+        final Polynomial p9 = new Polynomial(coefs6, 1);
+        final Polynomial p10 = p8.multiply(p9);
+        p10.multConst(inverseMod(2,PRIME));
+        System.out.println("The p8: " + p8);
+        System.out.println("The p9: " + p9);
+        System.out.println("The p10: " + p10);
+        System.out.println("------------------------------------------------------");
+        p4.multConst(6);
+        p7.multConst(6);
+        p10.multConst(8);
+        Polynomial p11 = p4.add(p7);
+        Polynomial p12 = p11.add(p10);
+        System.out.println(p12);
+        System.out.println("The secret = " + p12.modCompute(0));
+        
     }
 }
