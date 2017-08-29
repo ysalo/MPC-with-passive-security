@@ -155,15 +155,6 @@ public class Polynomial {
         if (r < 0) r += PRIME;
         return r;
     }
-
-    public final boolean isZero() {
-        for(int i =0; i < myCoefs.length; i++) {
-            if(myCoefs[i] != 0) {
-                return false;
-            }
-        }
-        return true;
-    }
     
     /**
      * String representation of a polynomial in ascending order of degree.
