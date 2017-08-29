@@ -39,7 +39,7 @@ public class Gates {
 	
 	public static void multiply(Player[] players, int a, int b) {
 		for(Player p : players) {
-			p.setY(Polynomial.posMod((p.getShares()[a] * p.getShares()[b]))); 
+			p.setY(Polynomial.posMod(p.getShares()[a] * p.getShares()[b])); 
 		}
 	}
 }

@@ -8,9 +8,9 @@ package computation;
  * @version 1
  */
 public class Lagrange {
-
-    /** Prevent instantiation. */
+    
     private Lagrange() {
+    //Prevent instantiation.
     }
 
     /**
