@@ -34,14 +34,4 @@ public class Lagrange {
         }
         return result;
     }
-    
-    public static final void main(String[] args) {
-        final RandPoly p = new RandPoly(124, 9);
-        int[] pl = new int[] {1,2,3,4,5,6,7,8,9,10};
-        int[] s = p.computeShares(5);
-        int r = interpolate(pl,s);
-        System.out.println(p);
-        System.out.println(r);
-        
-    }
 }
