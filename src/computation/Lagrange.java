@@ -1,39 +1,34 @@
 package computation;
-
-//TODO this works but it's a mess.
+//TODO maybe a map is better.
 /**
  * Implementation of Lagrange Interpolation.
  * 
  * @author Yaro Salo
- * @version 1
+ * @version 2
  */
 public class Lagrange {
-    
-    private Lagrange() {
-    //Prevent instantiation.
-    }
 
+    private Lagrange() {
+        // Prevent instantiation.
+    }
+    
     /**
-     * Lagrange interpolation for secret sharing.
-     * @param thePlayers the x values.
-     * @param theShares the y values.
-     * @return the reconstructed polynomial.
+     * Interpolate the polynomial at 0 using Lagrange's interpolation
+     * @param thePlayers the X values.
+     * @param theShares the Y values.
+     * @return the constant of the polynomial. 
      */
-    public final static Polynomial interpolate(final int[] thePlayers, final int[] theShares) {
-        Polynomial result = null;
-        int idx = 0;
-        for (int i : thePlayers) {
-            Polynomial temp = null;
-            for (int j : thePlayers) {
-                if (i != j) {
-                    if (temp == null) temp = new Polynomial(new int[] { -j, 1 }, 1);
-                    else temp = temp.multiply(new Polynomial(new int[] { -j, 1 }, 1));
-                    temp.multConst(Polynomial.inverseMod(i - j, Polynomial.PRIME));
-                }
+    public final static int interpolate(final int[] thePlayers, final int[] theShares) {
+        int result = 0;
+        for (int i = 0; i < thePlayers.length; i++) {
+            int term = theShares[i]; //get the player's share.
+            for (int j = 0; j < thePlayers.length; j++) {
+                if (j != i)
+                    //multiply the current share by the corresponding weight.
+                    term = RandPoly.posMod(term * (0 - thePlayers[j])
+                            * RandPoly.inverseMod(thePlayers[i] - thePlayers[j], RandPoly.PRIME));
             }
-            temp.multConst(theShares[idx++]);
-            if (result == null) result = temp;
-            else result = result.add(temp);
+            result = RandPoly.posMod(result + term); //sum up the terms.
         }
         return result;
     }

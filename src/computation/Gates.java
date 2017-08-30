@@ -4,9 +4,9 @@ import CEPS.Player;
 
 public class Gates {
 	private static final int PRIME = 127;
-	private Polynomial myPoly;
+	private RandPoly myPoly;
 	
-	public Gates(Polynomial thePoly) {
+	public Gates(RandPoly thePoly) {
 		myPoly = thePoly;
 	}
 	
@@ -19,7 +19,7 @@ public class Gates {
 	 */
 	public static void additionGate(Player[] players, int a, int b) {
 		for(Player p : players) {
-			p.setY((Polynomial.posMod(p.getShares()[a] + p.getShares()[b]))); 
+			p.setY((RandPoly.posMod(p.getShares()[a] + p.getShares()[b]))); 
 		}
 		
 	}
@@ -33,13 +33,13 @@ public class Gates {
 	 */
 	public static void multiplyByConst(Player[] players, int a, int constant) {
 		for(Player p : players) {
-			p.setY(Polynomial.posMod((p.getShares()[a] * constant))); 
+			p.setY(RandPoly.posMod((p.getShares()[a] * constant))); 
 		}
 	}
 	
 	public static void multiply(Player[] players, int a, int b) {
 		for(Player p : players) {
-			p.setY(Polynomial.posMod(p.getShares()[a] * p.getShares()[b])); 
+			p.setY(RandPoly.posMod(p.getShares()[a] * p.getShares()[b])); 
 		}
 	}
 }

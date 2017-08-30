@@ -1,17 +1,17 @@
 package CEPS;
 
-import computation.Polynomial;
+import computation.RandPoly;
 
 public class Player {
 	
-	private Polynomial myPoly;
+	private RandPoly myPoly;
 	private int[] myInput;
 	private int[] myShares;
 	private int myY;
 	
 	
 	public Player(int secret, int players) {
-		myPoly = new Polynomial(secret, players / 2);
+		myPoly = new RandPoly(secret, players / 2);
 		myInput = myPoly.computeShares(players);
 		myShares = new int[players];
 		myY = 0; //?????
@@ -22,7 +22,7 @@ public class Player {
 	}
 	
 	/* ***** GETTERS & SETTERS ***** */
-	public Polynomial getPoly() {
+	public RandPoly getPoly() {
 		return myPoly; // Return a copy????
 	}
 	

@@ -4,16 +4,18 @@ import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Random;
 
-//TODO fix how the degree is being set or remove.	
 //TODO maybe a better way to do multiplication.
 /**
  * Represent a polynomial used for secret sharing.
  */
-public class Polynomial {
+public class RandPoly {
+    /** Random generator for the class. */
+    private static final Random RAND = new SecureRandom();
+    
     /** The field prime. */
     public static final int PRIME = 127;
     /** The coefficients of the polynomial. */
-    private final int[] myCoefs;
+    private int[] myCoefs;
     /** The degree of the polynomial. */
     private final int myDegree;
 
@@ -22,22 +24,16 @@ public class Polynomial {
      * @param theSecret player's secret share.
      * @param theDegree the degree of the polynomial.
      */
-    public Polynomial(final int theSecret, final int theDegree) {
+    public RandPoly(final int theSecret, final int theDegree) {
         if (theSecret >= PRIME || theSecret < 0)
             throw new IllegalArgumentException("The secret is outside the field!");
         if (theDegree < 0)
             throw new IllegalArgumentException("Invalid degree!");
         myCoefs = randPoly(theSecret, theDegree);
-        myDegree = theDegree;
-    }
-
-    /**
-     * Used by package methods.
-     * @param theCoefs the coefficients.
-     * @param theDegree the degree.
-     */
-    protected Polynomial(int[] theCoefs, int theDegree) {
-        myCoefs = theCoefs;
+        final int n = myCoefs.length - 1;
+        //make sure that the polynomial is not of degree < t.
+        //ex: f(x) = 2 + x + 0x^2 is of degree 1.
+        while(myCoefs[n] == 0) myCoefs[n] = RAND.nextInt(PRIME); 
         myDegree = theDegree;
     }
   
@@ -45,7 +41,7 @@ public class Polynomial {
      * Used by class methods.
      * @param theDegree the degree.
      */
-    private Polynomial(final int theDegree) {
+    private RandPoly(final int theDegree) {
         myDegree = theDegree;
         myCoefs = new int[myDegree + 1];
     }
@@ -57,11 +53,10 @@ public class Polynomial {
      * @return a random polynomial of desired degree.
      */
     private final int[] randPoly(final int theSecret, final int theDegree) {
-        final Random rand = new SecureRandom();
         final int[] coefs = new int[theDegree + 1];
         coefs[0] = theSecret;
         for (int i = 1; i <= theDegree; i++) {
-            coefs[i] = rand.nextInt(PRIME);
+            coefs[i] = RAND.nextInt(PRIME);
         }
         return coefs;
     }
@@ -94,10 +89,12 @@ public class Polynomial {
     }
 
     /**
-     * Create a new polynomial the result of this + theP2
+     * Create a new polynomial the result of this + theP2.
+     * @param theP2 the polynomial to add to this polynomial.
+     * @return the result of addition.
      */
-    public final Polynomial add(final Polynomial theP2) {
-        Polynomial result = new Polynomial(Math.max(myDegree, theP2.myDegree));
+    public final RandPoly add(final RandPoly theP2) {
+        RandPoly result = new RandPoly(Math.max(myDegree, theP2.myDegree));
         for(int i = 0; i <= myDegree; i++) { //this could be a problem.
             result.myCoefs[i] = posMod(myCoefs[i] + theP2.myCoefs[i]);
         }
@@ -109,9 +106,9 @@ public class Polynomial {
      * @param theP2 the polynomial to multiply this polynomial by.
      * @return the result of multiplying this polynomial by theP2.
      */
-    public final Polynomial multiply(final Polynomial theP2) {
+    public final RandPoly multiply(final RandPoly theP2) {
         final int degree = myDegree + theP2.myDegree;
-        final Polynomial result = new Polynomial(degree);
+        final RandPoly result = new RandPoly(degree);
         for (int i = 0; i < myCoefs.length; i++) {
             for (int j = 0; j < theP2.myCoefs.length; j++) {
                 result.myCoefs[i + j] = 
