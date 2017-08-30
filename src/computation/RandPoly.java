@@ -8,12 +8,11 @@ import java.util.Random;
 /**
  * Represent a polynomial used for secret sharing.
  */
-public class RandPoly {
-    /** Random generator for the class. */
-    private static final Random RAND = new SecureRandom();
-    
+public class RandPoly {    
     /** The field prime. */
     public static final int PRIME = 127;
+    /** Random generator for the class. */
+    private static final Random RAND = new SecureRandom();
     /** The coefficients of the polynomial. */
     private int[] myCoefs;
     /** The degree of the polynomial. */
