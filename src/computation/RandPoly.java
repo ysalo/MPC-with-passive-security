@@ -29,10 +29,6 @@ public class RandPoly {
         if (theDegree < 0)
             throw new IllegalArgumentException("Invalid degree!");
         myCoefs = randPoly(theSecret, theDegree);
-        final int n = myCoefs.length - 1;
-        //make sure that the polynomial is not of degree < t.
-        //ex: f(x) = 2 + x + 0x^2 is of degree 1.
-        while(myCoefs[n] == 0) myCoefs[n] = RAND.nextInt(PRIME); 
         myDegree = theDegree;
     }
   
@@ -57,6 +53,9 @@ public class RandPoly {
         for (int i = 1; i <= theDegree; i++) {
             coefs[i] = RAND.nextInt(PRIME);
         }
+        //make sure that the polynomial is not of degree < t.
+        //ex: f(x) = 2 + x + 0x^2 is of degree 1.
+        while(coefs[theDegree] == 0) coefs[theDegree] = RAND.nextInt(PRIME); 
         return coefs;
     }
 
@@ -128,8 +127,8 @@ public class RandPoly {
     }
 
     /**
-     * Compute the modular inverse of theX and theY using BigInteger modInverse.
-     * @param theXvthe x.
+     * Compute the modular inverse of theX and theY using BigInteger modInverse().
+     * @param theX the x.
      * @param theY the y.
      * @throws BigInteger not invertible if there is no multiplicative inverse.
      * @return the multiplicative inverse of x and y.
@@ -144,7 +143,7 @@ public class RandPoly {
     /**
      * remainder >= 0.
      * @param theX theX mod PRIME.
-     * @return the remainder.
+     * @return the modulo.
      */
     public static final int posMod(final int theX) {
         int r = theX % PRIME;

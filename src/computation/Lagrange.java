@@ -1,5 +1,9 @@
 package computation;
+
 //TODO maybe a map is better.
+//TODO this breaks really fast when the coefficients are large 
+//     because the primitive int overflows: 
+//     one solution is to change from int to long.
 /**
  * Implementation of Lagrange Interpolation.
  * 
@@ -25,10 +29,11 @@ public class Lagrange {
         for (int i = 0; i < thePlayers.length; i++) {
             int term = theShares[i]; //get the player's share.
             for (int j = 0; j < thePlayers.length; j++) {
-                if (j != i)
+                if (j != i) {
                     //multiply the current share by the corresponding weight.
                     term = RandPoly.posMod(term * (0 - thePlayers[j])
                             * RandPoly.inverseMod(thePlayers[i] - thePlayers[j], RandPoly.PRIME));
+                }  
             }
             result = RandPoly.posMod(result + term); //sum up the terms.
         }
