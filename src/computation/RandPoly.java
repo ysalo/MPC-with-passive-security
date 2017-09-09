@@ -171,4 +171,8 @@ public class RandPoly {
         }
         return sb.toString();
     }
+    
+    public static void main(String[] theArgs) {
+        
+    }
 }
