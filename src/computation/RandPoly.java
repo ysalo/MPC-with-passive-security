@@ -2,7 +2,6 @@ package computation;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
-import java.util.Random;
 
 //TODO maybe a better way to do multiplication.
 /**
@@ -12,9 +11,9 @@ public class RandPoly {
     /** The field prime. */
     public static final int PRIME = 127;
     /** Random generator for the class. */
-    private static final Random RAND = new SecureRandom();
+    private static final SecureRandom RAND = new SecureRandom();
     /** The coefficients of the polynomial. */
-    private int[] myCoefs;
+    private long[] myCoefs;
     /** The degree of the polynomial. */
     private final int myDegree;
 
@@ -23,7 +22,7 @@ public class RandPoly {
      * @param theSecret player's secret share.
      * @param theDegree the degree of the polynomial.
      */
-    public RandPoly(final int theSecret, final int theDegree) {
+    public RandPoly(final long theSecret, final int theDegree) {
         if (theSecret >= PRIME || theSecret < 0)
             throw new IllegalArgumentException("The secret is outside the field!");
         if (theDegree < 0)
@@ -38,7 +37,7 @@ public class RandPoly {
      */
     private RandPoly(final int theDegree) {
         myDegree = theDegree;
-        myCoefs = new int[myDegree + 1];
+        myCoefs = new long[myDegree + 1];
     }
 
     /**
@@ -47,15 +46,16 @@ public class RandPoly {
      * @param theDegree the degree of the polynomial.
      * @return a random polynomial of desired degree.
      */
-    private final int[] randPoly(final int theSecret, final int theDegree) {
-        final int[] coefs = new int[theDegree + 1];
+    private final long[] randPoly(final long theSecret, final int theDegree) {
+        long[] stream = RAND.longs(theDegree, 0, PRIME).toArray();
+        final long[] coefs = new long[theDegree + 1];
         coefs[0] = theSecret;
-        for (int i = 1; i <= theDegree; i++) {
-            coefs[i] = RAND.nextInt(PRIME);
+        for (int i = 1; i <= stream.length; i++) {
+            coefs[i] = stream[i - 1];
         }
         //make sure that the polynomial is not of degree < t.
         //ex: f(x) = 2 + x + 0x^2 is of degree 1.
-        while(coefs[theDegree] == 0) coefs[theDegree] = RAND.nextInt(PRIME); 
+        while(coefs[theDegree] == 0) coefs[theDegree] = RAND.longs(1, 0, PRIME).toArray()[0]; 
         return coefs;
     }
 
@@ -65,8 +65,8 @@ public class RandPoly {
      * @param theVal value to compute at.
      * @return the result of computation.
      */
-    public final int modCompute(final int theVal) {
-        int result = 0;
+    public final long modCompute(final long theVal) {
+        long result = 0;
         // polynomial is in ascending order
         for (int i = myCoefs.length - 1; i >= 0; i--)
             result = posMod(result * theVal + myCoefs[i]);
@@ -78,15 +78,15 @@ public class RandPoly {
      * @param theShareNum the number of shares desired.
      * @return array of shares.
      */
-    public final int[] computeShares(final int theShareNum) {
-        final int[] shares = new int[theShareNum];
+    public final long[] computeShares(final int theShareNum) {
+        final long[] shares = new long[theShareNum];
         for (int i = 1; i <= theShareNum; i++) {
             shares[i - 1] = modCompute(i);
         }
         return shares;
     }
 
-    /**
+    /**xxxxxxxxxxxxxx
      * Create a new polynomial the result of this + theP2.
      * @param theP2 the polynomial to add to this polynomial.
      * @return the result of addition.
@@ -99,7 +99,7 @@ public class RandPoly {
         return result;
     }
     
-    /**
+    /**xxxxxxxxxxxxxxx
      * Create a new polynomial the result of this * theP2.
      * @param theP2 the polynomial to multiply this polynomial by.
      * @return the result of multiplying this polynomial by theP2.
@@ -116,7 +116,7 @@ public class RandPoly {
         return result;
     }
 
-    /**
+    /**xxxxxxxxxxxx
      * Multiply this polynomial by a constant.
      * @param theConst the constant.
      */
@@ -145,8 +145,8 @@ public class RandPoly {
      * @param theX theX mod PRIME.
      * @return the modulo.
      */
-    public static final int posMod(final int theX) {
-        int r = theX % PRIME;
+    public static final long posMod(final long theX) {
+        long r = theX % PRIME;
         if (r < 0) r += PRIME;
         return r;
     }

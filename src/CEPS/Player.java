@@ -5,19 +5,19 @@ import computation.RandPoly;
 public class Player {
 	
 	private RandPoly myPoly;
-	private int[] myInput;
-	private int[] myShares;
-	private int myY;
+	private long[] myInput;
+	private long[] myShares;
+	private long myY;
 	
 	
 	public Player(int secret, int players) {
 		myPoly = new RandPoly(secret, players / 2);
 		myInput = myPoly.computeShares(players);
-		myShares = new int[players];
+		myShares = new long[players];
 		myY = 0; //?????
 	}
 	
-	public void addShare(int i, int share) {
+	public void addShare(int i, long share) {
 		myShares[i] = share;
 	}
 	
@@ -26,21 +26,21 @@ public class Player {
 		return myPoly; // Return a copy????
 	}
 	
-	public int[] getInput() {
+	public long[] getInput() {
 		return myInput; // Return a copy????
 	}
 	
 	// ??? getShares(index i)
 	// ???     return myShares[i]
-	public int[] getShares() {
+	public long[] getShares() {
 		return myShares; // Return a copy????
 	}
 	
-	public int getY() {
+	public long getY() {
 		return myY;
 	}
 	
-	public void setY(int y) {
+	public void setY(long y) {
 		myY = y;
 	}
 }
