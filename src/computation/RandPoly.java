@@ -2,8 +2,6 @@ package computation;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
-import java.util.Random;
-import java.util.stream.LongStream;
 
 //TODO maybe a better way to do multiplication.
 /**
@@ -13,7 +11,7 @@ public class RandPoly {
     /** The field prime. */
     public static final int PRIME = 127;
     /** Random generator for the class. */
-    private static final Random RAND = new SecureRandom();
+    private static final SecureRandom RAND = new SecureRandom();
     /** The coefficients of the polynomial. */
     private long[] myCoefs;
     /** The degree of the polynomial. */
@@ -57,8 +55,7 @@ public class RandPoly {
         }
         //make sure that the polynomial is not of degree < t.
         //ex: f(x) = 2 + x + 0x^2 is of degree 1.
-        if(coefs[theDegree] == 0) System.out.println("The degree was one less.");
-        while(coefs[theDegree] == 0) coefs[theDegree] = RAND.longs(theDegree, 0, PRIME).toArray()[0]; 
+        while(coefs[theDegree] == 0) coefs[theDegree] = RAND.longs(1, 0, PRIME).toArray()[0]; 
         return coefs;
     }
 
