@@ -20,8 +20,9 @@ public class PeerMain {
             System.out.print("Enter the port: ");
             final int cPort = scan.nextInt();
             scan.nextLine();
-            //Peer peer = new Peer(number, 10, port, HOST);
-            peer.sendMessage(1212, cPort, cHost);
+            
+            peer.sendShares();
+            for(long x : peer.getPlayer().getMyRecShares()) System.out.println("The shares: " + x);
             scan.close();
         } catch(Exception e) {
             e.printStackTrace();

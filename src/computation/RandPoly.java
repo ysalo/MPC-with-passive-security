@@ -9,7 +9,7 @@ import java.security.SecureRandom;
  */
 public class RandPoly {    
     /** The field prime. */
-    public static final long PRIME = 127;
+    public static final long PRIME = 1299821;
     /** Random generator for the class. */
     private static final SecureRandom RAND = new SecureRandom();
     /** The coefficients of the polynomial. */
@@ -170,9 +170,5 @@ public class RandPoly {
             }
         }
         return sb.toString();
-    }
-    
-    public static void main(String[] theArgs) {
-        
     }
 }

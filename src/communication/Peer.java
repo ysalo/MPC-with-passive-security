@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import CEPS.Player;
+
 //TODO figure out how to add peers to the network. 
 
 /**
@@ -23,6 +25,8 @@ import java.util.Scanner;
  */
 public class Peer {
 
+    /** The number of players. */ 
+    private static final int NUMPLAYER = 2;
     /** Maximum numbers of peers that can connect. */
     private final int myMaxPeers;
     /** List of connected peers. */ 
@@ -31,6 +35,9 @@ public class Peer {
     private final PeerServer myPeerServer;
     /** Info needed to identify a peer. */
     private final PeerIdentity myPeerId;
+    /** The player. */
+    private final Player myPlayer;
+    
 
     /**
      * Class constructor. 
@@ -44,11 +51,22 @@ public class Peer {
         myKnownPeers = new ArrayList<>();
         myPeerServer = new PeerServer();
         myPeerId = new PeerIdentity(thePeerNum, theServerPort, theHost);
+        myPlayer = new Player(NUMPLAYER); 
+        System.out.println("In the PEER\n-------------------------------------\n");
+        for(long x: myPlayer.getMyShares()) System.out.println("The shares: " + x); 
         registerPeers();
-        startListening();
         
     }
       
+    
+    public void sendShares() {
+        
+        for(PeerIdentity pi: myKnownPeers) {
+            final int pNum = pi.getMyNum();
+            sendMessage(pNum, pi.getMySerPort(), pi.getMyHost(), myPlayer.getMyShares()[pNum - 1]);   
+        }
+    }
+    
     /**
      * Add known peers to the peer list. 
      */
@@ -69,7 +87,7 @@ public class Peer {
     /**
      * Begin listening for connections.
      */
-    private void startListening() {
+    public void startListening() {
         
         //Create a separate thread to listen for connections so that 
         //this peer could also act as a client. Without a new thread 
@@ -97,7 +115,7 @@ public class Peer {
     }
     
     public void sendMessage(final int theNumber, final int thePort,
-                            final String theHost) {
+                            final String theHost, final long share) {
         try (
                 
                 final Socket socket = new Socket(theHost, thePort);
@@ -105,16 +123,8 @@ public class Peer {
                 final BufferedReader reader = new BufferedReader( new InputStreamReader(socket.getInputStream()));
                 final BufferedReader inputReader = new BufferedReader( new InputStreamReader(System.in));
             ) {
-                String userInput;
-                System.out.print("Your massage: ");
-                //TODO throw exception when the server is closed.
-                while (!(userInput = inputReader.readLine()).equals("quit")) {
-                    userInput = theNumber +  " says: " + userInput;
-                    writer.println(userInput);
-                    //System.out.println("Server says: " + reader.readLine());
-                    System.out.print("Your massage: ");
-                    
-                }
+
+                writer.println(share);
                 System.out.println();
             } catch (UnknownHostException e) {
                 System.err.println("Who dat" + theHost + "?");
@@ -132,6 +142,9 @@ public class Peer {
         return myPeerId.getMySerPort();
     }
     
+    public Player getPlayer() {
+        return myPlayer;
+    }
     /**
      * @return the host of this peer.
      */
@@ -178,6 +191,49 @@ public class Peer {
                 }
             } catch (final IOException e) {
                 System.out.println("Cannot listen on port " + myPeerId.getMySerPort()); 
+                e.printStackTrace();
+            }
+
+        }
+    }
+    
+    /**
+     * Inner class to handle server operations. 
+     * @author Yaro Salo
+     * @version 2
+     */
+    public class ServerHandler extends Thread{
+        
+        /** The socket on which the connection is established. */
+        private final Socket mySocket; 
+        
+        /**
+         * Class constructor. 
+         * @param theSocket the socket on which the connection is open.
+         */
+        public ServerHandler(final Socket theSocket) {
+            mySocket = theSocket;
+        }
+       
+        public void run() { 
+            //try with statement **try(){}** will close the writer after the connection is closed.
+            //writer writes messages to the the client
+            try (final PrintWriter writer = new PrintWriter(mySocket.getOutputStream(), true);  
+                    final BufferedReader reader = new BufferedReader(new InputStreamReader(mySocket.getInputStream()));)
+            {    
+                String temp;
+                long share; //read the one line of the massage. 
+                while((temp = reader.readLine()) != null) {
+                    share = Long.parseLong(temp);
+                    myPlayer.addShare(share);
+//                    System.out.println("Incoming message: " + message); //print one line of the client message.
+//                    //message = message.toUpperCase(); //capitalize client input
+//                    writer.println(message);         //send the input back to the client.
+                }
+                
+                mySocket.close(); //close the socket after the connection terminates. 
+                                  //the thread automatically shuts down after execution. 
+            } catch (final IOException e) {
                 e.printStackTrace();
             }
 
