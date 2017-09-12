@@ -9,7 +9,7 @@ import java.security.SecureRandom;
  */
 public class RandPoly {    
     /** The field prime. */
-    public static final int PRIME = 127;
+    public static final long PRIME = 127;
     /** Random generator for the class. */
     private static final SecureRandom RAND = new SecureRandom();
     /** The coefficients of the polynomial. */
@@ -133,7 +133,7 @@ public class RandPoly {
      * @throws BigInteger not invertible if there is no multiplicative inverse.
      * @return the multiplicative inverse of x and y.
      */
-    public static final int inverseMod(final int theX, final int theY) {
+    public static final int inverseMod(final long theX, final long theY) {
         final BigInteger bX = BigInteger.valueOf(theX);
         final BigInteger bY = BigInteger.valueOf(theY);
         final int result = bX.modInverse(bY).intValue();

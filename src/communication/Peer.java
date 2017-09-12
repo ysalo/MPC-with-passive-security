@@ -107,6 +107,7 @@ public class Peer {
             ) {
                 String userInput;
                 System.out.print("Your massage: ");
+                //TODO throw exception when the server is closed.
                 while (!(userInput = inputReader.readLine()).equals("quit")) {
                     userInput = theNumber +  " says: " + userInput;
                     writer.println(userInput);
