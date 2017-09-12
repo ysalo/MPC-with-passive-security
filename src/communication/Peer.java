@@ -11,11 +11,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Scanner;
 
 //TODO figure out how to add peers to the network. 
@@ -48,24 +44,21 @@ public class Peer {
         myKnownPeers = new ArrayList<>();
         myPeerServer = new PeerServer();
         myPeerId = new PeerIdentity(thePeerNum, theServerPort, theHost);
-        
-        //startListening();
         registerPeers();
+        startListening();
+        
     }
       
     /**
      * Add known peers to the peer list. 
      */
     private void registerPeers() {
-        File f = new File("../files/knownPeers.csv");
+        final File f = new File("../files/knownPeers.csv");
         try {
-            Scanner scan = new Scanner(f);
+            final Scanner scan = new Scanner(f);
             while(scan.hasNext()) {
                 final String[] s = scan.nextLine().split(",");
-                final int number = Integer.parseInt(s[0]);
-                final int port = Integer.parseInt(s[1]);
-                final String host = s[2];
-                addPeer(number, port, host);
+                addPeer(Integer.parseInt(s[0]), Integer.parseInt(s[1]), s[2]);
             }
             scan.close();
         } catch (FileNotFoundException e) {
@@ -98,7 +91,7 @@ public class Peer {
     public void addPeer(final int thePeerNum, final int thePort, final String theHost) {
         
         if(myKnownPeers.size() <= myMaxPeers ){ 
-            PeerIdentity pi = new PeerIdentity(thePeerNum, thePort, theHost);
+            final PeerIdentity pi = new PeerIdentity(thePeerNum, thePort, theHost);
             myKnownPeers.add(pi);
         }
     }
@@ -106,10 +99,11 @@ public class Peer {
     public void sendMessage(final int theNumber, final int thePort,
                             final String theHost) {
         try (
+                
                 final Socket socket = new Socket(theHost, thePort);
-                PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
-                BufferedReader reader = new BufferedReader( new InputStreamReader(socket.getInputStream()));
-                BufferedReader inputReader = new BufferedReader( new InputStreamReader(System.in));
+                final PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
+                final BufferedReader reader = new BufferedReader( new InputStreamReader(socket.getInputStream()));
+                final BufferedReader inputReader = new BufferedReader( new InputStreamReader(System.in));
             ) {
                 String userInput;
                 System.out.print("Your massage: ");
@@ -158,8 +152,6 @@ public class Peer {
                           "\nPeer Host: " + myPeerId.getMyHost());        
     }
 
-    //Implemented as an inner class so that new peers 
-    //can be added easily when clients connect.
     /**
      * Implementation of server behavior of a peer.
      * @author Yaro Salo
@@ -167,7 +159,6 @@ public class Peer {
      */
     private class PeerServer {
         
-        @SuppressWarnings("rawtypes")
         public void runServer() throws SocketException{
             
             //a server socket to listen for incoming connections.
@@ -189,37 +180,6 @@ public class Peer {
                 e.printStackTrace();
             }
 
-        }
-    }
-    
-    /**
-     * Information needed to identify a peer.
-     * @author Yaro Salo
-     * @version 1
-     */
-    public class PeerIdentity {
-
-        private final int myNum;
-        private final int mySerPort; 
-        private final String myHost;
-        
-        public PeerIdentity(final int theNum, final int theSerPort, 
-                            final String theHost) {
-            myNum = theNum; 
-            mySerPort = theSerPort;
-            myHost = theHost;
-        }
-
-        public int getMyNum() {
-            return myNum;
-        }
-
-        public int getMySerPort() {
-            return mySerPort;
-        }
-
-        public String getMyHost() {
-            return myHost;
         }
     }
 }

@@ -2,8 +2,6 @@ package communication;
 
 import java.util.Scanner;
 
-import communication.Peer.PeerIdentity;
-
 public class PeerMain {
     private final static String HOST = "localhost";
     
@@ -14,7 +12,7 @@ public class PeerMain {
             //final String host = theArgs[1];
             final int port = Integer.parseInt(theArgs[1]);
             
-            
+
             Peer peer = new Peer(number, 10, port, HOST);
             for(PeerIdentity pi: peer.getPeers()) {
                 System.out.println("Peer Id Number: " + pi.getMyNum() + 
@@ -32,8 +30,9 @@ public class PeerMain {
             final int cPort = scan.nextInt();
             scan.nextLine();
             peer.sendMessage(number, cPort, HOST);
+            scan.close();
         } catch(Exception e) {
             e.printStackTrace();
-        }
+        } 
     }
 }
