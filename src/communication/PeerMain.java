@@ -14,22 +14,14 @@ public class PeerMain {
             
 
             Peer peer = new Peer(number, 10, port, HOST);
-            for(PeerIdentity pi: peer.getPeers()) {
-                System.out.println("Peer Id Number: " + pi.getMyNum() + 
-                        "\nPeer Listen Port: " + pi.getMySerPort() + 
-                        "\nPeer Host: " + pi.getMyHost());
-                System.out.println("------------------------------------------------------------------");
-                
-            }
             final Scanner scan = new Scanner(System.in);
-//            System.out.print("Enter client name: ");
-//            final String cName = scan.nextLine();
-//            System.out.print("Enter client host: ");
-//            final String cHOst = scan.nextLine();
+            System.out.print("Enter client host: ");
+            final String cHost = scan.nextLine();
             System.out.print("Enter the port: ");
             final int cPort = scan.nextInt();
             scan.nextLine();
-            peer.sendMessage(number, cPort, HOST);
+            //Peer peer = new Peer(number, 10, port, HOST);
+            peer.sendMessage(1212, cPort, cHost);
             scan.close();
         } catch(Exception e) {
             e.printStackTrace();
