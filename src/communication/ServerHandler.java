@@ -25,12 +25,12 @@ public class ServerHandler extends Thread{
     }
    
     public void run() { 
-        //try with statement **try(){}** will close the reader and writer after the connection is closed.
-        //writer write messages to the the client
-        //reader reads messages for the client
+        //try with statement **try(){}** will close the writer after the connection is closed.
+        //writer writes messages to the the client
         try (final PrintWriter writer = new PrintWriter(mySocket.getOutputStream(), true);  
                 final BufferedReader reader = new BufferedReader(new InputStreamReader(mySocket.getInputStream()));)
         {
+           
             String message; //read the one line of the massage. 
             while((message = reader.readLine()) != null) {
                 System.out.println("Incoming message: " + message); //print one line of the client message.
